@@ -1,7 +1,3 @@
-#!/usr/bin/env python3
-"""Task 3: Deletion-resilient hypermedia pagination
-"""
-
 import csv
 from typing import Dict, List, Tuple
 
@@ -9,7 +5,6 @@ from typing import Dict, List, Tuple
 def index_range(page: int, page_size: int) -> Tuple[int, int]:
     """Retrieves the index range from a given page and page size.
     """
-
     return ((page - 1) * page_size, ((page - 1) * page_size) + page_size)
 
 
@@ -20,6 +15,7 @@ class Server:
 
     def __init__(self):
         self.__dataset = None
+        self.__indexed_dataset = None
 
     def dataset(self) -> List[List]:
         """Cached dataset
@@ -31,6 +27,16 @@ class Server:
             self.__dataset = dataset[1:]
 
         return self.__dataset
+
+    def indexed_dataset(self) -> Dict[int, List]:
+        """Dataset indexed by sorting position, starting at 0
+        """
+        if self.__indexed_dataset is None:
+            dataset = self.dataset()
+            self.__indexed_dataset = {
+                i: dataset[i] for i in range(len(dataset))
+            }
+        return self.__indexed_dataset
 
     def get_page(self, page: int = 1, page_size: int = 10) -> List[List]:
         """Retrieves a page of data.
@@ -52,14 +58,14 @@ class Server:
         page_data = []
         data_count = 0
         next_index = None
-        start = index if index else 0
-        for i, item in data.items():
-            if i >= start and data_count < page_size:
+        start = index if index is not None else 0
+        for i in range(start, len(data)):
+            item = data[i]
+            if data_count < page_size:
                 page_data.append(item)
                 data_count += 1
-                continue
             if data_count == page_size:
-                next_index = i
+                next_index = i + 1
                 break
         page_info = {
             'index': index,
