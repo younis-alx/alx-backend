@@ -7,7 +7,7 @@ from flask_babel import Babel
 
 
 class Config:
-    '''Config class'''
+    '''Configuration class for internationalization'''
 
     DEBUG = True
     LANGUAGES: list[str] = ["en", "fr"]
