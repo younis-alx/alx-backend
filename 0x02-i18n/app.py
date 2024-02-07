@@ -84,8 +84,6 @@ def get_index() -> str:
     g.time = format_datetime()
     return render_template('index.html')
 
-babel.init_app(app, locale_selector=get_locale)
-
 
 if __name__ == '__main__':
     app.run()
