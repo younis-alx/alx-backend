@@ -7,7 +7,7 @@ from flask_babel import Babel
 
 
 class Config:
-    '''Config class'''
+    '''Configuration class for internationalization'''
 
     DEBUG = True
     LANGUAGES: list[str] = ["en", "fr"]
@@ -21,8 +21,8 @@ app.url_map.strict_slashes = False
 babel = Babel(app)
 
 
-# @babel.localeselector
-def get_locale() -> str | None:
+@babel.localeselector
+def get_locale() -> str:
     """Retrieves the locale for a web page.
 
     Returns:
@@ -39,9 +39,6 @@ def index() -> str:
         html: homepage
     '''
     return render_template("3-index.html")
-
-babel.init_app(app, locale_selector=get_locale)
-
 
 
 if __name__ == "__main__":

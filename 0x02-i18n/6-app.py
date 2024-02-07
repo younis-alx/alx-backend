@@ -8,7 +8,7 @@ from flask_babel import Babel
 
 
 class Config:
-    '''Config class'''
+    '''Configuration class for internationalization'''
 
     DEBUG = True
     LANGUAGES: list[str] = ["en", "fr"]
@@ -32,7 +32,7 @@ users = {
 def get_user() -> Union[Dict, None]:
     """Retrieves a user based on a user id.
     """
-    login_id: str | None = request.args.get('login_as')
+    login_id: str = request.args.get('login_as')
     if login_id:
         return users.get(int(login_id))
     return None
@@ -46,13 +46,14 @@ def before_request() -> None:
     g.user = get_user()
 
 
-def get_locale() -> str | None:
+@babel.localeselector
+def get_locale() -> str:
     """Retrieves the locale for a web page.
 
     Returns:
         str: best match
     """
-    locale: str | None = request.args.get('locale')
+    locale: str = request.args.get('locale')
     if locale in app.config['LANGUAGES']:
         return locale
     if g.user and g.user['locale'] in app.config["LANGUAGES"]:
@@ -71,8 +72,6 @@ def index() -> str:
         html: homepage
     '''
     return render_template("6-index.html")
-
-babel.init_app(app, locale_selector=get_locale)
 
 
 if __name__ == "__main__":

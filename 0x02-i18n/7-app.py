@@ -9,7 +9,7 @@ import pytz
 
 
 class Config:
-    '''Config class'''
+    '''Configuration class for internationalization'''
 
     DEBUG = True
     LANGUAGES: list[str] = ["en", "fr"]
@@ -47,13 +47,14 @@ def before_request() -> None:
     g.user = get_user()
 
 
-def get_locale() -> str | None:
+@babel.localeselector
+def get_locale() -> str:
     """Retrieves the locale for a web page.
 
     Returns:
         str: best match
     """
-    locale: str | None = request.args.get('locale')
+    locale: str = request.args.get('locale')
     if locale in app.config['LANGUAGES']:
         return locale
     if g.user and g.user['locale'] in app.config["LANGUAGES"]:
@@ -64,7 +65,7 @@ def get_locale() -> str | None:
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
-def get_timezone() -> str | None:
+def get_timezone() -> str:
     """Retrieves the timezone for a web page.
     """
     timezone: str = request.args.get('timezone', '').strip()
@@ -84,11 +85,6 @@ def index() -> str:
         html: homepage
     '''
     return render_template("7-index.html")
-
-# uncomment this line and comment the @babel.localeselector
-# you get this error:
-# AttributeError: 'Babel' object has no attribute 'localeselector'
-babel.init_app(app, locale_selector=get_locale)
 
 
 if __name__ == "__main__":

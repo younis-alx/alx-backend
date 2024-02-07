@@ -44,6 +44,7 @@ def before_request() -> None:
     g.user = user
 
 
+@babel.localeselector
 def get_locale() -> str:
     """Retrieves the locale for a web page.
     """

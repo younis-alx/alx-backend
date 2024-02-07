@@ -20,6 +20,7 @@ app.config.from_object(Config)
 app.url_map.strict_slashes = False
 babel = Babel(app)
 
+
 @babel.localeselector
 def get_locale() -> str:
     """Retrieves the locale for a web page.
@@ -42,4 +43,3 @@ def index() -> str:
 
 if __name__ == "__main__":
     app.run()
-
